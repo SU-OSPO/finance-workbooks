@@ -2,11 +2,10 @@ cat("Checking dependencies...\n")
 if (!requireNamespace("pak", quietly = TRUE)) {
   install.packages("pak", repos = "http://cran.rstudio.com/")
 }
-pak::pak(c("openxlsx2", "dplyr", "tibble", "optparse"))
+pak::pak(c("openxlsx2", "dplyr", "optparse"))
 
 suppressMessages(library(openxlsx2))
 suppressMessages(library(dplyr))
-suppressMessages(library(tibble))
 suppressMessages(library(optparse))
 
 # clear existing data in the environment if running this interactively

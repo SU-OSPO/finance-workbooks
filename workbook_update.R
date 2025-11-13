@@ -1,8 +1,10 @@
 cat("Checking dependencies...\n")
-if (!requireNamespace("pak", quietly = TRUE)) {
-  install.packages("pak", repos = "http://cran.rstudio.com/")
+if (!requireNamespace("renv", quietly = TRUE)) {
+  install.packages("renv", repos = "http://cran.rstudio.com/")
 }
-pak::pak(c("openxlsx2", "dplyr", "optparse"))
+renv::restore(repos = "http://cran.rstudio.com/")
+
+cat("\n")
 
 suppressMessages(library(openxlsx2))
 suppressMessages(library(dplyr))

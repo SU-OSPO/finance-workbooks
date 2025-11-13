@@ -93,7 +93,7 @@ if (!dir.exists(args$output)) {
 }
 
 for (wb_file in to_process) {
-  cat(paste("Processing workbook:", wb_file, "\n"))
+  cat(paste("Processing workbook:", wb_file))
 
   ## Load workbook ####
   grant_wb <- wb_load(file.path(args$input, wb_file))
@@ -103,6 +103,7 @@ for (wb_file in to_process) {
     grant_wb$Content_Types[grepl('<Override PartName="/xl/workbook.xml" ', grant_wb$Content_Types)] <-
       '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.ms-excel.sheet.macroEnabled.main+xml"/>'
   }
+  cat(".")
 
   # get the project ids from the summary sheet
   award_info <- wb_to_df(grant_wb, sheet = "Award Info", start_row = 2,
@@ -126,6 +127,7 @@ for (wb_file in to_process) {
 
   exp_sub <- exp_df %>%
     filter(PROJECT_ID %in% project_ids)
+  cat(".")
 
   ## Update data ####
   # write to the Budget Data sheet in the workbook
@@ -139,6 +141,7 @@ for (wb_file in to_process) {
   # write to the Expense Data sheet in the workbook
   grant_wb$add_data(sheet = "Expense Data", x = exp_sub, start_row = 2,
                     col_names = FALSE, na.strings = "")
+  cat(".")
 
   ## Write workbook ####
   wb_file_write <- gsub("\\d{1,2}\\.\\d{1,2}\\.\\d{2}",
@@ -146,5 +149,6 @@ for (wb_file in to_process) {
                         wb_file)
   grant_wb$save(file.path(args$output, wb_file_write),
                 overwrite = TRUE)
+  cat("Done!\n")
 }
 cat("All done!\n")

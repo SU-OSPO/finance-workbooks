@@ -82,7 +82,7 @@ if (!dir.exists(args$input)) {
   stop("The input folder '", args$input, "' does not exist")
 }
 # loop over all workbooks in a directory
-to_process <- list.files(args$input, pattern = "\\.xlsx$")
+to_process <- list.files(args$input, pattern = "\\.xls[x|m]$")
 if (length(to_process) == 0) {
   stop("No .xlsx files found in ", args$input)
 }
@@ -96,9 +96,13 @@ for (wb_file in to_process) {
   cat(paste("Processing workbook:", wb_file, "\n"))
 
   ## Load workbook ####
-  # NB: the xlsm file didn't have any macros, which caused issues with openxlsx2
-  #     converted to xlsx for now
   grant_wb <- wb_load(file.path(args$input, wb_file))
+  # handle xlsm files without macros (https://github.com/JanMarvin/openxlsx2/issues/1452)
+  # if extension is xlsm
+  if (grepl("\\.xlsm$", wb_file, ignore.case = TRUE)) {
+    grant_wb$Content_Types[grepl('<Override PartName="/xl/workbook.xml" ', grant_wb$Content_Types)] <-
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.ms-excel.sheet.macroEnabled.main+xml"/>'
+  }
 
   # get the project ids from the summary sheet
   award_info <- wb_to_df(grant_wb, sheet = "Award Info", start_row = 2,

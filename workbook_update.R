@@ -6,6 +6,7 @@ pak::pak(c("openxlsx2", "dplyr", "optparse"))
 
 suppressMessages(library(openxlsx2))
 suppressMessages(library(dplyr))
+suppressMessages(library(readr))
 suppressMessages(library(optparse))
 
 # clear existing data in the environment if running this interactively
@@ -29,32 +30,52 @@ args <- parse_args(parser)
 # these are the full data files downloaded from DataInsights
 # make sure project_id is character to preserve leading zeros
 # make sure account is numeric to avoid issues with workbook formulae
-# need to check names because the last column doesn't have a name
-options(warn = -1)
 
 # check for files
-if (!file.exists(file.path(args$ref, "BUD.xlsm"))) {
-  stop("Reference file BUD.xlsm not found in ", args$ref)
+# identify files with regex (might have "(14)" etc. in the filename because of
+# multiple downloads)
+bud_files <- list.files(args$ref, "BUD.*\\.csv")
+com_files <- list.files(args$ref, "COM.*\\.csv")
+exp_files <- list.files(args$ref, "EXP.*\\.csv")
+if (length(bud_files) == 0) {
+  stop("No BUD.csv file found in ", args$ref)
+} else if (length(bud_files) > 1) {
+  warning("Multiple BUD.csv files found in ", args$ref,
+          "; using the first one: ", bud_files[1])
 }
-if (!file.exists(file.path(args$ref, "COM.xlsm"))) {
-  stop("Reference file COM.xlsm not found in ", args$ref)
+if (length(com_files) == 0) {
+  stop("No COM.csv file found in ", args$ref)
+} else if (length(com_files) > 1) {
+  warning("Multiple COM.csv files found in ", args$ref,
+          "; using the first one: ", com_files[1])
 }
-if (!file.exists(file.path(args$ref, "EXP.xlsm"))) {
-  stop("Reference file EXP.xlsm not found in ", args$ref)
+if (length(exp_files) == 0) {
+  stop("No EXP.csv file found in ", args$ref)
+} else if (length(exp_files) > 1) {
+  warning("Multiple EXP.csv files found in ", args$ref,
+          "; using the first one: ", exp_files[1])
 }
-bud_wb <- wb_load(file.path(args$ref, "BUD.xlsm"))
-bud_df <- wb_to_df(bud_wb, skip_empty_rows = TRUE,
-                   types = c(PROJECT_ID = "character", ACCOUNT = "numeric"),
-                   check_names = TRUE)
-com_wb <- wb_load(file.path(args$ref, "COM.xlsm"))
-com_df <- wb_to_df(com_wb, skip_empty_rows = TRUE,
-                   types = c(PROJECT_ID = "character", ACCOUNT = "numeric"),
-                   check_names = TRUE)
-exp_wb <- wb_load(file.path(args$ref, "EXP.xlsm"))
-exp_df <- wb_to_df(exp_wb, skip_empty_rows = TRUE,
-                   types = c(PROJECT_ID = "character", ACCOUNT = "numeric"),
-                   check_names = TRUE)
-options(warn = 0)
+
+options(warn = -1)  # suppress parsing warnings
+bud_df <- suppressMessages(
+  read_csv(file.path(args$ref, bud_files[1]),
+           col_types = cols(
+             PROJECT_ID = col_character(),
+             ACCOUNT = col_integer()
+           )))
+com_df <- suppressMessages(
+  read_csv(file.path(args$ref, com_files[1]),
+           col_types = cols(
+             PROJECT_ID = col_character(),
+             ACCOUNT = col_integer()
+           )))
+exp_df <- suppressMessages(
+  read_csv(file.path(args$ref, exp_files[1]),
+           col_types = cols(
+             PROJECT_ID = col_character(),
+             ACCOUNT = col_integer()
+           )))
+options(warn = 0)  # re-enable warnings
 
 # Process Workbooks ####
 if (!dir.exists(args$input)) {

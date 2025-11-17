@@ -118,19 +118,19 @@ for (wb_file in to_process) {
   n_bud <- wb_to_df(grant_wb, sheet = "Budget Data", skip_empty_rows = FALSE) %>%
     nrow()
   bud_sub <- bud_df %>%
-    filter(PROJECT %in% PROJECTs) %>%
+    filter(PROJECT %in% project_ids) %>%
     add_row(PROJECT = rep(NA, n_bud - nrow(.)))
 
   n_com <- wb_to_df(grant_wb, sheet = "Commitments Data", skip_empty_rows = FALSE) %>%
     nrow()
   com_sub <- com_df %>%
-    filter(PROJECT %in% PROJECTs) %>%
+    filter(PROJECT %in% project_ids) %>%
     add_row(PROJECT = rep(NA, n_com - nrow(.)))
 
   n_exp <- wb_to_df(grant_wb, sheet = "Expense Data", skip_empty_rows = FALSE) %>%
     nrow()
   exp_sub <- exp_df %>%
-    filter(PROJECT %in% PROJECTs) %>%
+    filter(PROJECT %in% project_ids) %>%
     add_row(PROJECT = rep(NA, n_exp - nrow(.)))
   cat(".")
 

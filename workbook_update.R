@@ -36,9 +36,12 @@ args <- parse_args(parser)
 # check for files
 # identify files with regex (might have "(14)" etc. in the filename because of
 # multiple downloads)
-bud_files <- list.files(args$ref, "BUD.*\\.csv")
-com_files <- list.files(args$ref, "COM.*\\.csv")
-exp_files <- list.files(args$ref, "EXP.*\\.csv")
+bud_files <- list.files(args$ref, "BUD.*\\.csv", full.names = TRUE)
+bud_files <- bud_files[order(file.info(bud_files)$mtime, decreasing = TRUE)]
+com_files <- list.files(args$ref, "COM.*\\.csv", full.names = TRUE)
+com_files <- com_files[order(file.info(com_files)$mtime, decreasing = TRUE)]
+exp_files <- list.files(args$ref, "EXP.*\\.csv", full.names = TRUE)
+exp_files <- exp_files[order(file.info(exp_files)$mtime, decreasing = TRUE)]
 if (length(bud_files) == 0) {
   stop("No BUD.csv file found in ", args$ref)
 } else if (length(bud_files) > 1) {
@@ -59,24 +62,27 @@ if (length(exp_files) == 0) {
 }
 
 options(warn = -1)  # suppress parsing warnings
+bud_enc <- guess_encoding(bud_files[1])$encoding[1]
 bud_df <- suppressMessages(
-  read_csv(file.path(args$ref, bud_files[1]),
-           col_types = cols(
-             PROJECT = col_character(),
-             ACCOUNT = col_integer()
-           )))
+  read_delim(bud_files[1],
+             col_types = cols(
+               PROJECT = col_character(),
+               ACCOUNT = col_integer()
+             ), locale = locale(encoding = bud_enc)))
+com_enc <- guess_encoding(com_files[1])$encoding[1]
 com_df <- suppressMessages(
-  read_csv(file.path(args$ref, com_files[1]),
-           col_types = cols(
-             PROJECT = col_character(),
-             ACCOUNT = col_integer()
-           )))
+  read_delim(com_files[1],
+             col_types = cols(
+               PROJECT = col_character(),
+               ACCOUNT = col_integer()
+             ), locale = locale(encoding = com_enc)))
+exp_enc <- guess_encoding(exp_files[1])$encoding[1]
 exp_df <- suppressMessages(
-  read_csv(file.path(args$ref, exp_files[1]),
-           col_types = cols(
-             PROJECT = col_character(),
-             ACCOUNT = col_integer()
-           )))
+  read_delim(exp_files[1],
+             col_types = cols(
+               PROJECT = col_character(),
+               ACCOUNT = col_integer()
+             ), locale = locale(encoding = exp_enc)))
 options(warn = 0)  # re-enable warnings
 
 # Process Workbooks ####

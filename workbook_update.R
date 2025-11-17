@@ -2,7 +2,7 @@ cat("Checking dependencies...\n")
 if (!requireNamespace("renv", quietly = TRUE)) {
   install.packages("renv", repos = "http://cran.rstudio.com/")
 }
-renv::restore(repos = "http://cran.rstudio.com/")
+renv::restore(repos = "http://cran.rstudio.com/", prompt = FALSE)
 
 cat("\n")
 

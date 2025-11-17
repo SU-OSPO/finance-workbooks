@@ -149,7 +149,7 @@ for (wb_file in to_process) {
   cat(".")
 
   ## Write workbook ####
-  wb_file_write <- gsub("\\d{1,2}\\.\\d{1,2}\\.\\d{2}",
+  wb_file_write <- gsub("\\d{1,2}\\.\\d{1,2}\\.\\d{2,4}",
                         format(Sys.Date(), "%m.%d.%y"),
                         wb_file)
   grant_wb$save(file.path(args$output, wb_file_write),

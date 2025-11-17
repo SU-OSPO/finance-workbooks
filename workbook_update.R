@@ -30,7 +30,7 @@ args <- parse_args(parser)
 
 # Read in full data ####
 # these are the full data files downloaded from DataInsights
-# make sure project_id is character to preserve leading zeros
+# make sure PROJECT is character to preserve leading zeros
 # make sure account is numeric to avoid issues with workbook formulae
 
 # check for files
@@ -62,19 +62,19 @@ options(warn = -1)  # suppress parsing warnings
 bud_df <- suppressMessages(
   read_csv(file.path(args$ref, bud_files[1]),
            col_types = cols(
-             PROJECT_ID = col_character(),
+             PROJECT = col_character(),
              ACCOUNT = col_integer()
            )))
 com_df <- suppressMessages(
   read_csv(file.path(args$ref, com_files[1]),
            col_types = cols(
-             PROJECT_ID = col_character(),
+             PROJECT = col_character(),
              ACCOUNT = col_integer()
            )))
 exp_df <- suppressMessages(
   read_csv(file.path(args$ref, exp_files[1]),
            col_types = cols(
-             PROJECT_ID = col_character(),
+             PROJECT = col_character(),
              ACCOUNT = col_integer()
            )))
 options(warn = 0)  # re-enable warnings
@@ -118,20 +118,20 @@ for (wb_file in to_process) {
   n_bud <- wb_to_df(grant_wb, sheet = "Budget Data", skip_empty_rows = FALSE) %>%
     nrow()
   bud_sub <- bud_df %>%
-    filter(PROJECT_ID %in% project_ids) %>%
-    add_row(PROJECT_ID = rep(NA, n_bud - nrow(.)))
+    filter(PROJECT %in% PROJECTs) %>%
+    add_row(PROJECT = rep(NA, n_bud - nrow(.)))
 
   n_com <- wb_to_df(grant_wb, sheet = "Commitments Data", skip_empty_rows = FALSE) %>%
     nrow()
   com_sub <- com_df %>%
-    filter(PROJECT_ID %in% project_ids) %>%
-    add_row(PROJECT_ID = rep(NA, n_com - nrow(.)))
+    filter(PROJECT %in% PROJECTs) %>%
+    add_row(PROJECT = rep(NA, n_com - nrow(.)))
 
   n_exp <- wb_to_df(grant_wb, sheet = "Expense Data", skip_empty_rows = FALSE) %>%
     nrow()
   exp_sub <- exp_df %>%
-    filter(PROJECT_ID %in% project_ids) %>%
-    add_row(PROJECT_ID = rep(NA, n_exp - nrow(.)))
+    filter(PROJECT %in% PROJECTs) %>%
+    add_row(PROJECT = rep(NA, n_exp - nrow(.)))
   cat(".")
 
   ## Update data ####

@@ -127,8 +127,11 @@ for (wb_file in to_process) {
     filter(PROJECT_ID %in% project_ids) %>%
     add_row(PROJECT_ID = rep(NA, n_com - nrow(.)))
 
+  n_exp <- wb_to_df(grant_wb, sheet = "Expense Data", skip_empty_rows = FALSE) %>%
+    nrow()
   exp_sub <- exp_df %>%
-    filter(PROJECT_ID %in% project_ids)
+    filter(PROJECT_ID %in% project_ids) %>%
+    add_row(PROJECT_ID = rep(NA, n_exp - nrow(.)))
   cat(".")
 
   ## Update data ####

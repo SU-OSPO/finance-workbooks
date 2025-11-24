@@ -1,8 +1,24 @@
 cat("Checking dependencies...\n")
-if (!requireNamespace("renv", quietly = TRUE)) {
-  install.packages("renv", repos = "http://cran.rstudio.com/")
+required_packages <- list(
+  openxlsx2 = "1.21", dplyr = "1.1.4", readr = "2.1.5", optparse = "1.7.5"
+)
+
+# Loop through the required packages
+for (pkg_name in names(required_packages)) {
+  # Check if the package is installed
+  if (!requireNamespace(pkg_name, quietly = TRUE)) {
+    cat(paste0("Installing ", pkg_name, "...", "\n"))
+    install.packages(pkg_name)
+  } else {
+    # Check if the installed version meets the minimum requirement
+    if (packageVersion(pkg_name) < required_packages[[pkg_name]]) {
+      cat(paste0("Upgrading ", pkg_name, "...", "\n"))
+      install.packages(pkg_name)
+    } else {
+      cat(paste0(pkg_name, " is already installed", "\n"))
+    }
+  }
 }
-renv::restore(repos = "http://cran.rstudio.com/", prompt = FALSE)
 
 cat("\n")
 

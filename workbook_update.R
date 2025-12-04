@@ -62,19 +62,19 @@ if (length(bud_files) == 0) {
   stop("No BUD.csv file found in ", args$ref)
 } else if (length(bud_files) > 1) {
   warning("Multiple BUD.csv files found in ", args$ref,
-          "; using the first one: ", bud_files[1])
+          "; using the most recent one: ", bud_files[1])
 }
 if (length(com_files) == 0) {
   stop("No COM.csv file found in ", args$ref)
 } else if (length(com_files) > 1) {
   warning("Multiple COM.csv files found in ", args$ref,
-          "; using the first one: ", com_files[1])
+          "; using the most recent one: ", com_files[1])
 }
 if (length(exp_files) == 0) {
   stop("No EXP.csv file found in ", args$ref)
 } else if (length(exp_files) > 1) {
   warning("Multiple EXP.csv files found in ", args$ref,
-          "; using the first one: ", exp_files[1])
+          "; using the most recent one: ", exp_files[1])
 }
 
 options(warn = -1)  # suppress parsing warnings

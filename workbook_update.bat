@@ -1,2 +1,2 @@
 @echo off
-Rscript workbook_update.R
+cmd /k Rscript workbook_update.R

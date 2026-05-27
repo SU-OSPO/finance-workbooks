@@ -60,3 +60,7 @@ The script performs the followings steps:
    3. Filter the DataInsights raw data (budget, commitments, and expenses) to those projects
    4. Replace the data in the copy with the filtered raw data
    5. Write the copy to the `output` folder
+  
+# Acknowledgments
+
+This project was supported as part of a grant (#[G2023-20946](https://sloan.org/grant-detail/G-2023-20946)) from the Alfred P. Sloan Foundation.
